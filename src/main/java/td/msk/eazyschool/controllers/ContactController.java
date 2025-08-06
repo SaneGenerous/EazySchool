@@ -9,7 +9,6 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
 import td.msk.eazyschool.model.Contact;
 import td.msk.eazyschool.service.ContactService;
 
@@ -41,8 +40,6 @@ public class ContactController {
             return "contact.html";
         }
         contactService.saveMessageDetails(contact);
-        contactService.setCounter(contactService.getCounter()+1);
-        System.out.println("Number of times the contact form is submitted: " + contactService.getCounter());
         return "redirect:/contact";
     }
 }

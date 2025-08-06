@@ -1,11 +1,14 @@
 package td.msk.eazyschool.config;
 
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.server.RequestPath;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
@@ -17,21 +20,28 @@ public class ProjectSecurityConfig {
     @Bean
     @Order(2147483642)
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
+        http.csrf((csrf) -> csrf.ignoringRequestMatchers("/saveMsg").ignoringRequestMatchers(PathRequest.toH2Console()))
                 .authorizeHttpRequests(requests -> requests.requestMatchers("/", "/home").permitAll()
-                     .requestMatchers("/dashboard").authenticated()
+                        .requestMatchers("/displayMessages").hasRole("ADMIN")
+                        .requestMatchers("/closeMsg/**").hasRole("ADMIN")
+                        .requestMatchers("/dashboard").authenticated()
                      .requestMatchers("/holidays/**").permitAll()
                      .requestMatchers("/contact").permitAll()
                      .requestMatchers("/saveMsg").permitAll()
                      .requestMatchers("/courses").permitAll()
                      .requestMatchers("/about").permitAll()
                      .requestMatchers("/login").permitAll()
+                     .requestMatchers("/logout").permitAll()
+                        .requestMatchers(PathRequest.toH2Console()).permitAll()
                      .requestMatchers("/assets/**").permitAll())
                      .formLogin(loginConfigurer -> loginConfigurer.loginPage("/login")
                      .defaultSuccessUrl("/dashboard").failureUrl("/login?error=true").permitAll())
                      .logout(logoutConfigurer -> logoutConfigurer.logoutSuccessUrl("/login?logout=true")
                      .invalidateHttpSession(true).permitAll())
                      .httpBasic(Customizer.withDefaults());
+
+        http.headers(headersConfigurer -> headersConfigurer.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable));
+
         return http.build();
     }
 
