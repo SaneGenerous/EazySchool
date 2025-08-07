@@ -4,10 +4,8 @@ import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.server.RequestPath;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,9 +18,10 @@ public class ProjectSecurityConfig {
     @Bean
     @Order(2147483642)
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf((csrf) -> csrf.ignoringRequestMatchers("/saveMsg").ignoringRequestMatchers(PathRequest.toH2Console()))
+        http.csrf((csrf) -> csrf.ignoringRequestMatchers("/saveMsg"))
                 .authorizeHttpRequests(requests -> requests.requestMatchers("/", "/home").permitAll()
                         .requestMatchers("/displayMessages").hasRole("ADMIN")
+                        .requestMatchers("/close/**").hasRole("ADMIN")
                         .requestMatchers("/closeMsg/**").hasRole("ADMIN")
                         .requestMatchers("/dashboard").authenticated()
                      .requestMatchers("/holidays/**").permitAll()
@@ -32,7 +31,6 @@ public class ProjectSecurityConfig {
                      .requestMatchers("/about").permitAll()
                      .requestMatchers("/login").permitAll()
                      .requestMatchers("/logout").permitAll()
-                        .requestMatchers(PathRequest.toH2Console()).permitAll()
                      .requestMatchers("/assets/**").permitAll())
                      .formLogin(loginConfigurer -> loginConfigurer.loginPage("/login")
                      .defaultSuccessUrl("/dashboard").failureUrl("/login?error=true").permitAll())
@@ -40,7 +38,7 @@ public class ProjectSecurityConfig {
                      .invalidateHttpSession(true).permitAll())
                      .httpBasic(Customizer.withDefaults());
 
-        http.headers(headersConfigurer -> headersConfigurer.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable));
+        //http.headers(headersConfigurer -> headersConfigurer.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable));
 
         return http.build();
     }
@@ -49,12 +47,12 @@ public class ProjectSecurityConfig {
         UserDetails user = User.withDefaultPasswordEncoder()
                 .username("user")
                 .password("12345")
-                .roles("USER")
+                .roles("ADMIN")
                 .build();
         UserDetails admin = User.withDefaultPasswordEncoder()
                 .username("admin")
                 .password("54321")
-                .roles("USER", "ADMIN")
+                .roles("USER")
                 .build();
         return new InMemoryUserDetailsManager(user, admin);
     }
