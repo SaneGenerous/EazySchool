@@ -2,8 +2,12 @@ package td.msk.eazyschool;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
+@EnableJpaRepositories("td.msk.eazyschool.repositories")
+@EntityScan("td.msk.eazyschool.model")
 public class EazySchoolApplication {
 
     public static void main(String[] args) {
