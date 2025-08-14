@@ -15,7 +15,7 @@ public class DashboardController {
     public String displayDashboard(Model model, Authentication authentication) {
 
         model.addAttribute("userName", authentication.getName());
-        model.addAttribute("roles", authentication.getAuthorities().toString());
+        model.addAttribute("role", authentication.getAuthorities().toString());
 
         return "dashboard.html";
     }

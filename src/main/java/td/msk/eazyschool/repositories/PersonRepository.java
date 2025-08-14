@@ -6,4 +6,5 @@ import td.msk.eazyschool.model.Person;
 
 @Repository
 public interface PersonRepository extends JpaRepository<Person, Long> {
+    Person readByEmail(String email);
 }
