@@ -34,7 +34,7 @@ public class Person extends BaseEntity {
     private Address address;
 
     @NotBlank(message = "Name must not be blank")
-    @Size(message = "Name must be at least 3 characters long")
+    @Size(min = 3, message = "Name must be at least 3 characters long")
     private String name;
 
     @NotBlank(message = "Mobile number must not be blank")
