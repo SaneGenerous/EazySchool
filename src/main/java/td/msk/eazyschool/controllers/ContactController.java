@@ -48,7 +48,7 @@ public class ContactController {
     public String displayMessages(Model model) {
         List<Contact> contactMsgs = contactService.findMsgsWithOpenStatus();
         ModelAndView modelAndView = new ModelAndView("messages.html");
-        modelAndView.addObject("contactsMsgs", contactMsgs);
+        modelAndView.addObject("contactMsgs", contactMsgs);
         return modelAndView.toString();
     }
 
@@ -57,4 +57,5 @@ public class ContactController {
         contactService.updateMsgStatus(id);
         return "redirect:/displayMessages";
     }
+
 }

@@ -6,11 +6,17 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import td.msk.eazyschool.annotations.FieldsValueMatch;
 import td.msk.eazyschool.annotations.PasswordValidator;
 
+import java.util.HashSet;
+import java.util.Set;
 
-@Data
+
+@Setter
+@Getter
 @Entity
 @FieldsValueMatch.List({
         @FieldsValueMatch(
@@ -63,4 +69,16 @@ public class Person extends BaseEntity {
     @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER, targetEntity = Roles.class)
     @JoinColumn(name = "role_id", referencedColumnName = "roleId", nullable = false)
     private Roles role;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "class_id", referencedColumnName = "classId", nullable = true)
+    private EazyClass eazyClass;
+
+    @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @JoinTable(name = "person_courses",
+            joinColumns = {
+                @JoinColumn(name = "person_id", referencedColumnName = "personId")},
+            inverseJoinColumns = {
+                @JoinColumn(name = "course_id", referencedColumnName = "courseId")})
+    private Set<Courses> courses = new HashSet<>();
 }
