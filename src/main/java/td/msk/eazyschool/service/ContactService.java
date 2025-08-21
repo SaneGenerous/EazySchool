@@ -55,13 +55,17 @@ public class ContactService {
 
     public boolean updateMsgStatus(int contactId) {
         boolean isUpdated = false;
-        Optional<Contact> contact = contactRepository.findById(contactId);
-        contact.ifPresent(contact1 -> {
-            contact1.setStatus(EazySchoolConstants.CLOSE);
-
-        });
-        Contact updatedContact = contactRepository.save(contact.get());
-        if (updatedContact.getUpdatedBy() != null) {
+//        Optional<Contact> contact = contactRepository.findById(contactId);
+//        contact.ifPresent(contact1 -> {
+//            contact1.setStatus(EazySchoolConstants.CLOSE);
+//
+//        });
+//        Contact updatedContact = contactRepository.save(contact.get());
+//        if (updatedContact.getUpdatedBy() != null) {
+//            isUpdated = true;
+//        }
+        int i = contactRepository.updateStatusById(EazySchoolConstants.CLOSE, contactId);
+        if (i > 0) {
             isUpdated = true;
         }
         return isUpdated;
